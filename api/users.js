@@ -59,7 +59,7 @@ usersRouter.post('/register', async (req, res, next) => {
 
   try {
     const _user = await getUserByUsername(username);
-    console.log(_user);
+    //console.log(_user);
 
     if (_user) {
       next({
