@@ -1,7 +1,7 @@
 const express = require('express');
 const postRouter = express.Router();
 const { requireUser } = require('./utils');
-const { createPost } = require('../db/index.js');
+const { createPost, getu } = require('../db/index.js');
 
 postRouter.post('/', requireUser, async (req, res, next) => {
   const { title, content, tags = "" } = req.body;
@@ -15,9 +15,7 @@ postRouter.post('/', requireUser, async (req, res, next) => {
   }
 
   try {
-    const user = requireUser();
-    //console.log('authorId', authorId);
-    postData.user = user;
+    postData.authorId = req.user.id; 
     postData.title = title;
     postData.content = content;
     const post = await createPost(postData);
