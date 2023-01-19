@@ -1,6 +1,7 @@
 const express = require('express');
 const usersRouter = express.Router();
-const { getUserByUsername } = require('../db/index')
+const { getUserByUsername } = require('../db/index');
+const jwt = require('jsonwebtoken');
 
 usersRouter.use((req, res, next) => {
   console.log("A request is being made to /users");
@@ -21,7 +22,9 @@ usersRouter.get('/', async (req, res) => {
 
 
 usersRouter.post('/login', async (req, res, next) => {
-  const { username, password } = req.body;
+  const {username, password } = req.body;
+
+
 
   // request must have both
   if (!username || !password) {
@@ -36,7 +39,8 @@ usersRouter.post('/login', async (req, res, next) => {
 
     if (user && user.password == password) {
       // create token & return to user
-      res.send({ message: "you're logged in!" });
+      const token = jwt.sign({ id:user.id, username, password}, process.env.JWT_SECRET);
+      res.send({ message: "you're logged in!", 'token' : token });
     } else {
       next({ 
         name: 'IncorrectCredentialsError', 
